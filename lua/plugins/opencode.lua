@@ -46,7 +46,7 @@ return {
     end
     vim.keymap.set({ "n", "t" }, "<C-.>", toggle_opencode, { desc = "Toggle opencode" })
     vim.keymap.set({ "n", "t" }, "<C-_>", toggle_opencode, { desc = "Toggle opencode (Ctrl-/ fallback)" })
-    vim.keymap.set("n", "<leader>o.", toggle_opencode, { desc = "Toggle opencode" })
+    vim.keymap.set("n", "<leader>oo", toggle_opencode, { desc = "Toggle opencode" })
 
     vim.keymap.set({ "n", "x" }, "go", function()
       return require("opencode").operator("@this ")
