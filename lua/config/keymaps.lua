@@ -7,6 +7,12 @@ local map = vim.keymap.set
 -- map("n", "z", "10j", { desc = "moves 10 lines down" })
 -- map("n", "q", "10k", { desc = "moves 10 lines up" })
 
+-- Window resize mappings (explicit to avoid conflicts with other +/- mappings)
+map("n", "<leader>w+", "<cmd>wincmd +<cr>", { desc = "Increase Window Height" })
+map("n", "<leader>w-", "<cmd>wincmd -<cr>", { desc = "Decrease Window Height" })
+map("n", "<leader>w>", "<cmd>wincmd ><cr>", { desc = "Increase Window Width" })
+map("n", "<leader>w<lt>", "<cmd>wincmd <<cr>", { desc = "Decrease Window Width" })
+
 -- Manual completion popup (reliable: calls Blink directly)
 map("i", "<C-l>", function()
   local ok, blink = pcall(require, "blink.cmp")
