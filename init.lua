@@ -153,6 +153,12 @@ require("lazy").setup({
             hidden = true,
             file_ignore_patterns = { "node_modules", ".git", ".DS_Store", "dist", "build", ".turbo" },
           },
+          buffers = {
+            sort_lastused = true,
+            ignore_current_buffer = false,
+            path_display = { "smart" },
+            entry_format = "{filename}",
+          },
         },
       })
       pcall(telescope.load_extension, "fzf")
