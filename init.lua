@@ -100,6 +100,12 @@ require("lazy").setup({
     end,
   },
 
+  -- Smooth cursor animation
+  {
+    "sphamba/smear-cursor.nvim",
+    opts = {},
+  },
+
   -- Keymap explorer (shows available keymaps while typing)
   {
     "folke/which-key.nvim",
