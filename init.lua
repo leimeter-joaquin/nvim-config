@@ -107,8 +107,8 @@ map({ "n", "x" }, "<C-x>", function()
   require("opencode").select()
 end, { desc = "OpenCode actions" })
 map("n", "<leader>oo", function()
-  require("opencode").toggle()
-end, { desc = "Toggle OpenCode" })
+  require("opencode").start()
+end, { desc = "Start OpenCode" })
 
 -- Plugins -------------------------------------------------------------------
 require("lazy").setup({
@@ -339,7 +339,7 @@ require("lazy").setup({
 
         -- Reabrir opencode si estaba abierto al guardar la sesión
         if had_opencode then
-          require("opencode").toggle()
+          require("opencode").start()
         end
       end
 
