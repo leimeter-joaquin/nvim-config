@@ -24,7 +24,6 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Options -------------------------------------------------------------------
 vim.opt.number = true
-vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.termguicolors = true
 vim.opt.hidden = true
