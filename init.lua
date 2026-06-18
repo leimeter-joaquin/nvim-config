@@ -188,13 +188,8 @@ require("lazy").setup({
     event = "VeryLazy",
     dependencies = { "catppuccin/nvim" },
     config = function()
-      -- Resolve theme at runtime to ensure catppuccin is loaded first
-      local ok, _ = pcall(vim.cmd.colorscheme, "catppuccin-mocha")
-      local theme = ok and "catppuccin" or "auto"
-
       require("lualine").setup({
         options = {
-          theme = theme,
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
         },
