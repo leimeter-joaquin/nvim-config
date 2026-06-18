@@ -1,6 +1,9 @@
 -- Minimal Neovim config — small, fast, distributable
 -- Lazy.nvim bootstraps itself, everything else is declarative
 
+-- Leader key must be set BEFORE lazy.nvim loads
+vim.g.mapleader = " "
+
 -- Bootstrap lazy.nvim -------------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
