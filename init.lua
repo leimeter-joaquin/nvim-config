@@ -41,10 +41,19 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+vim.opt.showmode = false -- lualine ya muestra el modo
 
 -- Keymaps -------------------------------------------------------------------
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
+
+-- Smart q: no macro recording, keeps q:/q//q?
+map("n", "q", function()
+  local c = vim.fn.getcharstr()
+  if c == ":" or c == "/" or c == "?" then
+    vim.api.nvim_feedkeys("q" .. c, "n", false)
+  end
+end, { desc = "Smart q: no recordings, keeps q:/q?/q:" })
 
 -- Window navigation with hjkl
 map("n", "<C-h>", "<C-w>h", opts)
@@ -82,7 +91,8 @@ map("n", "<C-u>", "<C-u>zz", opts)
 map("n", "<leader>e", "<cmd>Oil<CR>", { desc = "Open file explorer" })
 
 -- Telescope (fuzzy finder)
-map("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
+map("n", "<leader><leader>", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
+map("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files (alt)" })
 map("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", { desc = "Grep" })
 map("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "Buffers" })
 map("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", { desc = "Help tags" })
@@ -239,17 +249,118 @@ require("lazy").setup({
           section_separators = { left = "", right = "" },
         },
         sections = {
+          lualine_a = {
+            { "mode" },
+          },
+          lualine_b = {
+            { "branch" },
+          },
           lualine_c = {
             {
-              "filename",
-              path = 1, -- relative path from cwd
+              function()
+                if vim.bo.buftype == "terminal" then
+                  return ""
+                end
+                if vim.bo.filetype == "oil" then
+                  local name = vim.api.nvim_buf_get_name(0)
+                  local path = name:gsub("^oil://", "")
+                  local parts = vim.split(path, "/")
+                  if #parts <= 2 then
+                    return path
+                  end
+                  return parts[#parts - 1] .. "/" .. parts[#parts]
+                end
+                local dir = vim.fn.expand("%:.:h")
+                local file = vim.fn.expand("%:t")
+                if dir == "" or dir == "." then
+                  return file
+                end
+                local parts = vim.split(dir, "/")
+                if #parts <= 2 then
+                  return dir .. "/" .. file
+                end
+                return parts[#parts - 1] .. "/" .. file
+              end,
             },
+          },
+          lualine_x = {
+            { "encoding" },
+            { "fileformat" },
+            { "filetype" },
+          },
+          lualine_y = {
+            { "progress" },
+          },
+          lualine_z = {
+            { "location" },
           },
         },
       })
     end,
   },
 
+  -- Session persistence — keep buffers and windows between restarts
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = {
+      need = 0, -- guarda siempre (no requiere mínimo de buffers)
+    },
+    config = function(_, opts)
+      require("persistence").setup(opts)
+
+      -- Auto-load on startup (el config corre en BufReadPre, temprano pero después de VimEnter)
+      if vim.fn.isdirectory(".git") == 1 then
+        local persistence = require("persistence")
+        local session_file = persistence.current()
+        local had_opencode = false
+
+        -- Checkear si opencode estaba abierto en la sesión guardada
+        if vim.fn.filereadable(session_file) == 1 then
+          local f = io.open(session_file, "r")
+          if f then
+            had_opencode = f:read("*a"):find("opencode") ~= nil
+            f:close()
+          end
+        end
+
+        pcall(persistence.load)
+
+        -- Limpiar buffers fantasma de opencode (terminal sin proceso)
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+          if vim.bo[buf].buftype == "terminal" then
+            local name = vim.api.nvim_buf_get_name(buf)
+            local status = vim.fn.term_getstatus(buf)
+            if name:match("term://.*opencode") and (type(status) ~= "string" or not status:match("running")) then
+              vim.api.nvim_buf_delete(buf, { force = true })
+            end
+          end
+        end
+
+        -- Reabrir opencode si estaba abierto al guardar la sesión
+        if had_opencode then
+          require("opencode").toggle()
+        end
+      end
+
+      -- <leader>qs → restore last session (manual override)
+      vim.keymap.set("n", "<leader>qs", function()
+        require("persistence").load()
+      end, { desc = "Restore session" })
+    end,
+  },
+
   -- OpenCode integration — talk to opencode from inside nvim
-  { "nickjvandyke/opencode.nvim" },
+  {
+    "nickjvandyke/opencode.nvim",
+    config = function()
+      vim.g.opencode_opts = {
+        events = {
+          permissions = {
+            enabled = false, -- No molestar con popups; responder desde la TUI
+          },
+        },
+      }
+    end,
+  },
 })
