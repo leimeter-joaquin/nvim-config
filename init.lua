@@ -68,6 +68,9 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", opts)
 map("n", "<C-d>", "<C-d>zz", opts)
 map("n", "<C-u>", "<C-u>zz", opts)
 
+-- File explorer (oil.nvim)
+map("n", "<leader>e", "<cmd>Oil<CR>", { desc = "Open file explorer" })
+
 -- Telescope (fuzzy finder)
 map("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
 map("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", { desc = "Grep" })
@@ -157,11 +160,10 @@ require("lazy").setup({
   },
 
   -- File explorer — edit directories as buffers (hjkl friendly)
+  -- Loads at startup so it can intercept nvim . and :e <dir>
   {
     "stevearc/oil.nvim",
-    keys = {
-      { "<leader>e", "<cmd>Oil<CR>", desc = "Open file explorer" },
-    },
+    lazy = false,
     opts = {
       default_file_explorer = true,
       columns = { "icon" },
