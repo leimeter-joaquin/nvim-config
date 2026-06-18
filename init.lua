@@ -353,6 +353,7 @@ require("lazy").setup({
   -- OpenCode integration — talk to opencode from inside nvim
   {
     "nickjvandyke/opencode.nvim",
+    lazy = false,
     config = function()
       vim.g.opencode_opts = {
         events = {
