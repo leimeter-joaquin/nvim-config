@@ -304,56 +304,18 @@ require("lazy").setup({
     "folke/persistence.nvim",
     event = "BufReadPre",
     opts = {
-      need = 0, -- guarda siempre (no requiere mínimo de buffers)
+      need = 0,
     },
+    -- Restaurar sesión automática al abrir nvim
     config = function(_, opts)
       require("persistence").setup(opts)
-
-      -- Auto-load on startup (el config corre en BufReadPre, temprano pero después de VimEnter)
-      if vim.fn.isdirectory(".git") == 1 then
-        local persistence = require("persistence")
-        local session_file = persistence.current()
-        local had_opencode = false
-
-        -- Checkear si opencode estaba abierto en la sesión guardada
-        if vim.fn.filereadable(session_file) == 1 then
-          local f = io.open(session_file, "r")
-          if f then
-            had_opencode = f:read("*a"):find("opencode") ~= nil
-            f:close()
-          end
-        end
-
-        pcall(persistence.load)
-
-        -- Limpiar buffers fantasma de opencode (terminal sin proceso)
-        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          if vim.bo[buf].buftype == "terminal" then
-            local name = vim.api.nvim_buf_get_name(buf)
-            local status = vim.fn.term_getstatus(buf)
-            if name:match("term://.*opencode") and (type(status) ~= "string" or not status:match("running")) then
-              vim.api.nvim_buf_delete(buf, { force = true })
-            end
-          end
-        end
-
-        -- Reabrir opencode si estaba abierto al guardar la sesión
-        if had_opencode then
-          require("opencode").start()
-        end
-      end
-
-      -- <leader>qs → restore last session (manual override)
-      vim.keymap.set("n", "<leader>qs", function()
-        require("persistence").load()
-      end, { desc = "Restore session" })
+      pcall(require("persistence").load)
     end,
   },
 
   -- OpenCode integration — talk to opencode from inside nvim
   {
     "nickjvandyke/opencode.nvim",
-    lazy = false,
     config = function()
       vim.g.opencode_opts = {
         events = {
