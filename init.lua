@@ -28,6 +28,7 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
+vim.opt.clipboard = "unnamedplus" -- system clipboard for yy/d/x
 vim.opt.autoread = true -- required for opencode.nvim
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
