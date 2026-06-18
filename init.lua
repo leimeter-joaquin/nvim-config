@@ -58,6 +58,16 @@ map("n", "<C-Down>", "<cmd>resize -2<CR>", opts)
 map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", opts)
 map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", opts)
 
+-- Window management via <leader>w (which-key shows the group)
+map("n", "<leader>wv", "<cmd>vsplit<CR>", opts)
+map("n", "<leader>ws", "<cmd>split<CR>", opts)
+map("n", "<leader>wc", "<cmd>close<CR>", opts)
+map("n", "<leader>wo", "<cmd>only<CR>", opts)
+map("n", "<leader>wh", "<C-w>h", opts)
+map("n", "<leader>wj", "<C-w>j", opts)
+map("n", "<leader>wk", "<C-w>k", opts)
+map("n", "<leader>wl", "<C-w>l", opts)
+
 -- Escape terminal mode
 map("t", "<Esc>", "<C-\\><C-n>", opts)
 
