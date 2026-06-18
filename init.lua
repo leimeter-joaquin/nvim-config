@@ -4,6 +4,9 @@
 -- Leader key must be set BEFORE lazy.nvim loads
 vim.g.mapleader = " "
 
+-- Disable netrw's file explorer — oil.nvim handles directories
+vim.g.loaded_netrwPlugin = 1
+
 -- Bootstrap lazy.nvim -------------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
