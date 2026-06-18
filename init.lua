@@ -4,10 +4,6 @@
 -- Leader key must be set BEFORE lazy.nvim loads
 vim.g.mapleader = " "
 
--- Disable netrw (built-in file explorer) — oil.nvim replaces it
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 -- Bootstrap lazy.nvim -------------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
@@ -160,7 +156,6 @@ require("lazy").setup({
   -- File explorer — edit directories as buffers (hjkl friendly)
   {
     "stevearc/oil.nvim",
-    cmd = { "Oil" },
     keys = {
       { "<leader>e", "<cmd>Oil<CR>", desc = "Open file explorer" },
     },
