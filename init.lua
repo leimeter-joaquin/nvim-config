@@ -162,6 +162,10 @@ require("lazy").setup({
     opts = {
       default_file_explorer = true,
       columns = { "icon" },
+      keymaps = {
+        ["l"] = "actions.select",
+        ["h"] = "actions.parent",
+      },
       view_options = {
         show_hidden = true,
       },
