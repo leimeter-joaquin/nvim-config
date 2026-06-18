@@ -149,7 +149,7 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter.config").setup({
         ensure_installed = {
           "lua", "vim", "vimdoc", "query",
           "javascript", "typescript", "html", "css", "json",
@@ -183,18 +183,21 @@ require("lazy").setup({
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = { "catppuccin/nvim" },
-    opts = {
-      options = {
-        theme = "catppuccin",
-        component_separators = { left = "", right = "" },
-        section_separators = { left = "", right = "" },
-      },
-    },
+    config = function()
+      -- Resolve theme at runtime to ensure catppuccin is loaded first
+      local ok, _ = pcall(vim.cmd.colorscheme, "catppuccin-mocha")
+      local theme = ok and "catppuccin" or "auto"
+
+      require("lualine").setup({
+        options = {
+          theme = theme,
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+        },
+      })
+    end,
   },
 
   -- OpenCode integration — talk to opencode from inside nvim
-  {
-    "nickjvandyke/opencode.nvim",
-    opts = {},
-  },
+  { "nickjvandyke/opencode.nvim" },
 })
